@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="WARN">
+    <appenders>
+        <File name="SearchFile" fileName="logs/SearchFile.log">
+            <PatternLayout pattern="%d{yyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+            <Filters>
+                <MarkerFilter marker="INPUT_HISTORY" />
+            </Filters>
+        </File>
+
+        <File name="InputErrorsFile" fileName="logs/InputErrorsFile.log">
+            <PatternLayout pattern="%d{yyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+          <Filters>
+                 <MarkerFilter marker="INVALID_STATIONS" />
+          </Filters>
+        </File>
+
+        <File name="ExceptionFile" fileName="logs/ExceptionFile.log" >
+            <PatternLayout pattern="%d{yyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+            <Filters>
+                <MarkerFilter marker="ERRORS" />
+            </Filters>
+        </File>
+    </appenders>
+    <loggers>
+        <root level="info">
+            <appender-ref ref="SearchFile" level="info"/>
+            <appender-ref ref="InputErrorsFile" level="warn"/>
+            <appender-ref ref="ExceptionFile" level="error"/>
+        </root>
+    </loggers>
+</configuration>
+
+
+        <!--        <logger name="LOGGER" level="error">-->
+        <!--            <appender-ref ref="errors"/>-->
+        <!--        </logger>-->
+
+<!--        <logger name="errors" level="error">-->
+<!--            <appender-ref ref="errors"/>-->
+<!--        </logger>-->
+
+<!--        <logger name="enteredStation" level="info">-->
+<!--            <appender-ref ref="enteredStation"/>-->
+<!--        </logger>-->
+
+<!--        <logger name="wrongStation" level="info">-->
+<!--            <appender-ref ref="wrongStation"/>-->
+<!--        </logger>-->
