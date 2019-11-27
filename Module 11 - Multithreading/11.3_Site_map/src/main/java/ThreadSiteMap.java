@@ -54,7 +54,8 @@ public class ThreadSiteMap implements Runnable {
         for (String link : linksDone) {
             try {
                 Path path = Paths.get(writeFile);
-                Files.writeString(path, link, StandardOpenOption.APPEND);
+               // Files.writeString(path, link, StandardOpenOption.APPEND);
+                Files.write(path, Collections.singleton(link));
             } catch (IOException e) {
                 e.printStackTrace();
             }
