@@ -13,7 +13,7 @@ public class Main {
 
         SiteMap siteMap = new SiteMap();
         ConcurrentLinkedQueue<String> queue = new ConcurrentLinkedQueue<>(Collections.singletonList(URL));
-        siteMap.parseLink(queue, WRITE_FILE, THREADS);
+        siteMap.parseLink(queue, WRITE_FILE, URL, THREADS);
 
     }
 
