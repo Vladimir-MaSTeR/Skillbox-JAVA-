@@ -10,22 +10,32 @@ import java.util.List;
 @RestController
 public class ToDoController {
 
-    @GetMapping("/books")
+    @GetMapping("/ToDo")
     public List<ToDo> list() {
        return Storage.getAllToDo();
     }
 
-    @PostMapping("/books")
+    @PostMapping("/toDo")
     public int add(ToDo toDo) {
        return Storage.addToDo(toDo);
     }
 
-    @GetMapping("/books/{id}")
+    @GetMapping("/ToDo/{id}")
     public ResponseEntity get (@PathVariable int id) {
         ToDo toDo = Storage.getToDo(id);
         if (toDo == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
         return new ResponseEntity(toDo, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/ToDo/{id}")
+    public void delete(@PathVariable int id) {
+        Storage.deleteToDo(id);
+    }
+
+    @PutMapping("/ToDo")
+    public void put(ToDo toDo) {
+        Storage.putToDo(toDo);
     }
 }

@@ -31,4 +31,12 @@ public class Storage {
         return null;
     }
 
+    public static void deleteToDo(int toDoId) {
+        toDos.remove(toDoId);
+    }
+
+    public static void putToDo(ToDo toDo) {
+        toDos.put(toDo.getId(), toDo);
+    }
+
 }
