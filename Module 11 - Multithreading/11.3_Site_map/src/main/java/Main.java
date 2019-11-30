@@ -5,7 +5,8 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class Main {
 
-    private static final String URL = "http://www.lenta.ru";
+    private static final String URL = "https://lenta.ru";
+    private static final String HOST = "http://lenta.ru";
     private static final String WRITE_FILE = "srs/main/resources/map.txt";
     private static final int THREADS = 10;
 
@@ -13,7 +14,7 @@ public class Main {
 
         SiteMap siteMap = new SiteMap();
         ConcurrentLinkedQueue<String> queue = new ConcurrentLinkedQueue<>(Collections.singletonList(URL));
-        siteMap.parseLink(queue, WRITE_FILE, URL, THREADS);
+        siteMap.parseLink(queue, WRITE_FILE, HOST, THREADS);
 
     }
 

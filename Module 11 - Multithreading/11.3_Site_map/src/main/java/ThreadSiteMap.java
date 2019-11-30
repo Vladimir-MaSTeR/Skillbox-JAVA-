@@ -11,13 +11,16 @@ import java.util.Collections;
 import java.util.TreeSet;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import static java.lang.Thread.sleep;
+
 public class ThreadSiteMap implements Runnable {
 
     private ConcurrentLinkedQueue<String> queue;
     private String writeFile;
     private String host;
 
-    private Boolean isWork = false;
+    public Boolean isWork = true;
+    private static boolean isAllWork = true;
 
     public ThreadSiteMap(ConcurrentLinkedQueue<String> queue, String writeFile, String host) {
         this.queue = queue;
@@ -25,58 +28,68 @@ public class ThreadSiteMap implements Runnable {
         this.host = host;
     }
 
-//   private static CopyOnWriteArraySet<String> allLinks = new CopyOnWriteArraySet<>();
-   private Collection<String> linksDone = Collections.synchronizedCollection(new TreeSet<>());
+
+   private static Collection<String> linksDone = Collections.synchronizedCollection(new TreeSet<>());
+
     @Override
     public void run() {
-        try {
-            if(isWork) {
-                try {
-                    Thread.sleep(200);
-                    System.out.println("Thread sleep..");
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
-            }
                 isWork = true;
-                System.out.println("Thread start work");
-                while (queue.size() > 0) {
-//                    isWork = true;
+                System.out.println(Thread.currentThread().getName() + " start work");
+
+                while (isAllWork) {
                     String url = queue.poll();
                     if (url != null) {
-                        Document document = Jsoup.connect(url).maxBodySize(0).get();
-                        Elements elements = document.select("a");
+                        isWork = true;
+                        linksDone.add(url);
+                        parseUrl(url);
 
-                        elements.forEach(el -> {
-                            String attr = el.attr("abs:href");
-                            if (!attr.isEmpty() && attr.startsWith(String.valueOf(host)) &&
-                                    !linksDone.contains(attr) && !attr.contains("#")) {
-                                linksDone.add(attr);
-//                                isWork = false;
-                                //  allLinks.add(attr);
-                            }
-//                            isWork = false;
-                        });
-//                        isWork = false;
+                    } else {
+                        isWork = false;
+                        if (sleepParser(200)) return;
                     }
-                  //  isWork = false;
                 }
             write(linksDone);
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
     }
 
     public void write(Collection<String> linksDone) {
         for (String link : linksDone) {
             try {
                 Path path = Paths.get(writeFile);
-                //Files.writeString(path, link, StandardOpenOption.APPEND);
                 Files.write(path, Collections.singleton(link));
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
+    }
+
+    public void parseUrl(String url) {
+        try {
+            Document document = Jsoup.connect(url).maxBodySize(0).get();
+            Elements elements = document.select("a");
+
+            elements.forEach(el -> {
+                String attr = el.attr("abs:href");
+                if (!attr.isEmpty() && attr.startsWith(String.valueOf(host)) &&
+                        !linksDone.contains(attr) && !attr.contains("#")) {
+                    linksDone.add(attr);
+                }
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void stopAll(){
+        isAllWork = false;
+    }
+
+    private boolean sleepParser(int ms) {
+        try {
+            sleep(ms);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            return true;
+        }
+        return false;
     }
 }
