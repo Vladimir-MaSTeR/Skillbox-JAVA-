@@ -19,7 +19,6 @@ public class SiteMap {
             threadList.add(threadSiteMap);
             executorService.submit(threadSiteMap);
         }
-
         boolean allThreadWork = true;
 
         while (allThreadWork) {
@@ -30,15 +29,27 @@ public class SiteMap {
                 e.printStackTrace();
             }
 
+            int countThread = 0;
             for (ThreadSiteMap tsm : threadList) {
-                if (!tsm.isWork) {
-                    allThreadWork = false;
-                    return;
-                }
+                if (tsm.isWork) countThread++;
+//                else countThread--;
+            }
+            if (countThread == 0) {
+                allThreadWork = false;
+                System.out.println(Thread.currentThread().getName() + "Stop work thread");
             }
         }
-
         ThreadSiteMap.stopAll();
         executorService.shutdown();
     }
 }
+
+
+//
+// for (ThreadSiteMap tsm : threadList) {
+//
+//                   countThread++;
+//                   allThreadWork = false;
+//                   return;
+//         }
+//         }

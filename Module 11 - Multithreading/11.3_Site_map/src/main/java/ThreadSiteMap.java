@@ -2,6 +2,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -52,6 +53,8 @@ public class ThreadSiteMap implements Runnable {
     }
 
     public void write(Collection<String> linksDone) {
+
+
         for (String link : linksDone) {
             try {
                 Path path = Paths.get(writeFile);
@@ -60,6 +63,7 @@ public class ThreadSiteMap implements Runnable {
                 e.printStackTrace();
             }
         }
+        System.out.println("Запись в файл закончена");
     }
 
     public void parseUrl(String url) {
@@ -71,7 +75,7 @@ public class ThreadSiteMap implements Runnable {
                 String attr = el.attr("abs:href");
                 if (!attr.isEmpty() && attr.startsWith(String.valueOf(host)) &&
                         !linksDone.contains(attr) && !attr.contains("#")) {
-                    linksDone.add(attr);
+                    queue.add(attr);
                 }
             });
         } catch (IOException e) {
