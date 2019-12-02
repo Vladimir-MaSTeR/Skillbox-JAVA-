@@ -1,12 +1,12 @@
 $(function() {
 
       appendToDo = function(data) {
-       var todoCode = '<a href="#" class="toDo-link" data-id="' + data.id + '">' + data.name + '</a><br>';
+       var todoCode = '<a href="#" class="ToDo-link" data-id="' + data.id + '">' + data.name + '</a><br>';
        $('#ToDo list').append('<div>' + todoCode + '</div>');
      };
 
      //
-     $.get('/books/', function(response) {
+     $.get('/ToDo/', function(response) {
         for(i in response) {
         appendToDo(response[i]);
         }
@@ -24,12 +24,12 @@ $(function() {
         }
      });
 
-     $(document).on('click', '.toDo-link', function() {
+     $(document).on('click', '.ToDo-link', function() {
          var link = $(this);
          var toDoId = link.data('id');
          $.ajax({
                     method: "GET",
-                    url: '/books/' + toDoId,
+                    url: '/ToDo/' + toDoId,
                     //data: data,
                     success: function(response) {
                        var code = '<span>Год выпуска ' + response.details + '</span>';
@@ -49,7 +49,7 @@ $(function() {
         var data = $('ToDo-form form').serialize();
         $.ajax({
            method: "POST",
-           url: '/books/',
+           url: '/ToDo/',
            //data: data,
            success: function(response) {
               $('ToDo-form').css('display', 'none');

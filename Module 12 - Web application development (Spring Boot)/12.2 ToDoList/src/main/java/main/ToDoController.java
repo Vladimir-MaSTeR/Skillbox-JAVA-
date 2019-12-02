@@ -10,17 +10,17 @@ import java.util.List;
 @RestController
 public class ToDoController {
 
-    @GetMapping("/ToDo")
+    @RequestMapping(value = "/ToDo", method = RequestMethod.GET)
     public List<ToDo> list() {
        return Storage.getAllToDo();
     }
 
-    @PostMapping("/toDo")
+    @RequestMapping(value = "/ToDo", method = RequestMethod.POST)
     public int add(ToDo toDo) {
        return Storage.addToDo(toDo);
     }
 
-    @GetMapping("/ToDo/{id}")
+    @RequestMapping(value = "/ToDo/{id}", method = RequestMethod.GET)
     public ResponseEntity get (@PathVariable int id) {
         ToDo toDo = Storage.getToDo(id);
         if (toDo == null) {
@@ -29,12 +29,12 @@ public class ToDoController {
         return new ResponseEntity(toDo, HttpStatus.OK);
     }
 
-    @DeleteMapping("/ToDo/{id}")
+    @RequestMapping(value = "/ToDo/{id}", method = RequestMethod.DELETE)
     public void delete(@PathVariable int id) {
         Storage.deleteToDo(id);
     }
 
-    @PutMapping("/ToDo")
+    @RequestMapping(value = "/ToDo", method = RequestMethod.PUT)
     public void put(ToDo toDo) {
         Storage.putToDo(toDo);
     }
