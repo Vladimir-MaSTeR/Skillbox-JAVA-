@@ -32,7 +32,6 @@ public class SiteMap {
             int countThread = 0;
             for (ThreadSiteMap tsm : threadList) {
                 if (tsm.isWork) countThread++;
-//                else countThread--;
             }
             if (countThread == 0) {
                 allThreadWork = false;
@@ -40,16 +39,7 @@ public class SiteMap {
             }
         }
         ThreadSiteMap.stopAll();
+        ThreadSiteMap.write(ThreadSiteMap.getLinksDone());
         executorService.shutdown();
     }
 }
-
-
-//
-// for (ThreadSiteMap tsm : threadList) {
-//
-//                   countThread++;
-//                   allThreadWork = false;
-//                   return;
-//         }
-//         }

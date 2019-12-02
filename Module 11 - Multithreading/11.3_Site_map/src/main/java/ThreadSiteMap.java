@@ -17,7 +17,7 @@ import static java.lang.Thread.sleep;
 public class ThreadSiteMap implements Runnable {
 
     private ConcurrentLinkedQueue<String> queue;
-    private String writeFile;
+    private static String writeFile;
     private String host;
 
     public Boolean isWork = true;
@@ -31,6 +31,9 @@ public class ThreadSiteMap implements Runnable {
 
 
    private static Collection<String> linksDone = Collections.synchronizedCollection(new TreeSet<>());
+    public static Collection<String> getLinksDone() {
+        return linksDone;
+    }
 
     @Override
     public void run() {
@@ -49,20 +52,16 @@ public class ThreadSiteMap implements Runnable {
                         if (sleepParser(200)) return;
                     }
                 }
-            write(linksDone);
     }
 
-    public void write(Collection<String> linksDone) {
+    public static void write(Collection<String> linksDone) {
 
-
-        for (String link : linksDone) {
             try {
                 Path path = Paths.get(writeFile);
-                Files.write(path, Collections.singleton(link));
+                Files.write(path, linksDone);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
         System.out.println("Запись в файл закончена");
     }
 
