@@ -30,12 +30,25 @@ public class ToDoController {
     }
 
     @RequestMapping(value = "/ToDo/{id}", method = RequestMethod.DELETE)
-    public void delete(@PathVariable int id) {
-        Storage.deleteToDo(id);
+    public ResponseEntity delete(@PathVariable int id) {
+        ToDo toDo = Storage.getToDo(id);
+        if (toDo == null) return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+
+        return new ResponseEntity(Storage.deleteToDo(id), HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/ToDo", method = RequestMethod.PUT)
-    public void put(ToDo toDo) {
-        Storage.putToDo(toDo);
+    @RequestMapping(value = "/ToDo/{id}", method = RequestMethod.PUT)
+    public ResponseEntity put(@PathVariable int id) {
+        ToDo toDo = Storage.getToDo(id);
+        if (toDo == null) return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+
+        return new ResponseEntity(Storage.putToDo(toDo), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/ToDo/{name}", method = RequestMethod.GET)
+    public ResponseEntity  search(@PathVariable String name) {
+        List<ToDo> list = Storage.search(name);
+        if (list.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        return new ResponseEntity(list, HttpStatus.OK);
     }
 }

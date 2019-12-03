@@ -49,7 +49,7 @@ $(function() {
         var data = $('ToDo-form form').serialize();
         $.ajax({
            method: "POST",
-           url: '/ToDo/',
+           url: '/toDo/',
            //data: data,
            success: function(response) {
               $('ToDo-form').css('display', 'none');
