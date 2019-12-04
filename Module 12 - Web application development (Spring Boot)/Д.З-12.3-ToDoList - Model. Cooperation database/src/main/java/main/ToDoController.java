@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import model.ToDo;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class ToDoController {
@@ -20,8 +22,14 @@ public class ToDoController {
 
     @RequestMapping(value = "/ToDo", method = RequestMethod.GET)
     public List<ToDo> list() {
-        Iterable<ToDo> toDoIterable = toDoRepository.findAll()
-        return Storage.getAllToDo();
+        Iterable<ToDo> toDoIterable = toDoRepository.findAll();
+        ArrayList<ToDo> toDoArrayList = new ArrayList<>();
+
+        for (ToDo toDo : toDoIterable) {
+            toDoArrayList.add(toDo);
+        }
+
+        return toDoArrayList;
     }
 
     @RequestMapping(value = "/ToDo", method = RequestMethod.POST)
@@ -32,19 +40,21 @@ public class ToDoController {
 
     @RequestMapping(value = "/ToDo/{id}", method = RequestMethod.GET)
     public ResponseEntity get (@PathVariable int id) {
-        ToDo toDo = Storage.getToDo(id);
-        if (toDo == null) {
+
+        Optional<ToDo> optionalToDo = toDoRepository.findById(id);
+
+        if (!optionalToDo.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
-        return new ResponseEntity(toDo, HttpStatus.OK);
+        return new ResponseEntity(optionalToDo.get(), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/ToDo/{id}", method = RequestMethod.DELETE)
     public ResponseEntity delete(@PathVariable int id) {
-        ToDo toDo = Storage.getToDo(id);
-        if (toDo == null) return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        toDoRepository.deleteById();
+        if (!optionalToDo.isPresent()) return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
 
-        return new ResponseEntity(Storage.deleteToDo(id), HttpStatus.OK);
+        return new ResponseEntity(toDoRepository.deleteById(id), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/ToDo/{id}", method = RequestMethod.PUT)
