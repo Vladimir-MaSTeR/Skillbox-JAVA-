@@ -45,10 +45,10 @@ public class ToDoController {
         return new ResponseEntity(Storage.putToDo(toDo), HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/ToDo/{name}", method = RequestMethod.GET)
+    @RequestMapping(value = "/ToDo/search/{name}", method = RequestMethod.GET)
     public ResponseEntity  search(@PathVariable String name) {
         List<ToDo> list = Storage.search(name);
-        if (list.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        //if (list.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         return new ResponseEntity(list, HttpStatus.OK);
     }
 }

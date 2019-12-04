@@ -3,9 +3,9 @@ package main;
 import response.ToDo;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Storage {
 
@@ -50,21 +50,27 @@ public class Storage {
     }
 
     public static List<ToDo> search(String name) {
-        ArrayList<ToDo> todoList = new ArrayList<>();
-        Collection<Integer> collection = toDos.keySet();
-        ToDo toDo = new ToDo();
-        toDo.setName(name);
-
-        for (Integer key : collection) {
-            ToDo toDo1 = toDos.get(key);
-            if (key != null) {
-                if (toDo.equals(toDo1)) {
-                    todoList.add(toDos.get(key));
-                }
-            }
-        }
-
-        return todoList;
+        return toDos.values()
+                             .stream()
+                             .filter(toDo -> toDo.getName().contains(name))
+                             .collect(Collectors.toList());
     }
-
 }
+
+//    public static List<ToDo> search(String name) {
+//        ArrayList<ToDo> todoList = new ArrayList<>();
+//        Collection<Integer> collection = toDos.keySet();
+//        ToDo toDo = new ToDo();
+//        toDo.setName(name);
+//
+//        for (Integer key : collection) {
+//            ToDo toDo1 = toDos.get(key);
+//            if (key != null) {
+//                if (toDo.equals(toDo1)) {
+//                    todoList.add(toDos.get(key));
+//                }
+//            }
+//        }
+//
+//        return todoList;
+//    }
