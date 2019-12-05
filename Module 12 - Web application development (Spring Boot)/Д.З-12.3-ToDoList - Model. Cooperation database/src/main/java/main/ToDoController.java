@@ -49,26 +49,31 @@ public class ToDoController {
         return new ResponseEntity(optionalToDo.get(), HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/ToDo/{id}", method = RequestMethod.DELETE)
-    public ResponseEntity delete(@PathVariable int id) {
-        toDoRepository.deleteById();
-        if (!optionalToDo.isPresent()) return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-
-        return new ResponseEntity(toDoRepository.deleteById(id), HttpStatus.OK);
+    @RequestMapping(value = "/ToDo/{id\\d+}", method = RequestMethod.DELETE)
+    public String delete(@PathVariable int id) {
+        toDoRepository.deleteById(id);
+        return "redirect:/ToDo";
     }
 
     @RequestMapping(value = "/ToDo/{id}", method = RequestMethod.PUT)
     public ResponseEntity put(@PathVariable int id) {
-        ToDo toDo = Storage.getToDo(id);
-        if (toDo == null) return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        Optional<ToDo> optionalToDo = toDoRepository.findById(id);
 
-        return new ResponseEntity(Storage.putToDo(toDo), HttpStatus.OK);
+        if (!optionalToDo.isPresent()) return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+
+        return new ResponseEntity(toDoRepository.save(optionalToDo.get()), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/ToDo/search/{name}", method = RequestMethod.GET)
     public ResponseEntity  search(@PathVariable String name) {
-        List<ToDo> list = Storage.search(name);
-        //if (list.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        return new ResponseEntity(list, HttpStatus.OK);
+        Iterable<ToDo> toDoIterable = toDoRepository.findAll();
+        ArrayList<ToDo> toDoArrayList = new ArrayList<>();
+
+            for (ToDo toDo : toDoIterable) {
+                if (toDo.getName().equals(name)) {
+                    toDoArrayList.add(toDo);
+                }
+            }
+        return new ResponseEntity(toDoArrayList, HttpStatus.OK);
     }
 }
