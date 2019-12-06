@@ -1,8 +1,6 @@
 package main;
 
 
-import model.ToDo;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

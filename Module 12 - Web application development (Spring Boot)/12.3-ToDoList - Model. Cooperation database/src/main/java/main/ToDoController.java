@@ -1,6 +1,6 @@
 package main;
 
-import model.ToDoRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import model.ToDo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +16,7 @@ import java.util.Optional;
 @RestController
 public class ToDoController {
 
-    @Autowired
+    @Autowired(required=false)
     private ToDoRepository toDoRepository;
 
     @RequestMapping(value = "/ToDo", method = RequestMethod.GET)
@@ -49,10 +48,13 @@ public class ToDoController {
         return new ResponseEntity(optionalToDo.get(), HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/ToDo/{id\\d+}", method = RequestMethod.DELETE)
-    public String delete(@PathVariable int id) {
+    @RequestMapping(value = "/ToDo/{id:\\d+}", method = RequestMethod.DELETE)
+    public ResponseEntity delete(@PathVariable int id) {
+        if (!toDoRepository.findById(id).isPresent())
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+
         toDoRepository.deleteById(id);
-        return "redirect:/ToDo";
+        return new ResponseEntity(id, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/ToDo/{id}", method = RequestMethod.PUT)
