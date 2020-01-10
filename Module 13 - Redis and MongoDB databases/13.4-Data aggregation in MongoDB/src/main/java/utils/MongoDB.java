@@ -11,21 +11,26 @@ import static com.mongodb.client.model.Aggregates.match;
 import static com.mongodb.client.model.Aggregates.unwind;
 import static com.mongodb.client.model.Filters.*;
 
+import com.mongodb.BasicDBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoException;
 import com.mongodb.client.AggregateIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.BsonField;
+import org.bson.BasicBSONObject;
+import org.bson.BsonDocument;
+import org.bson.BsonString;
 import org.bson.Document;
+import org.bson.conversions.Bson;
 import org.bson.io.BsonOutput;
 import org.w3c.dom.ls.LSOutput;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.DuplicateFormatFlagsException;
+import java.util.*;
+import java.util.function.Consumer;
 
 public class MongoDB {
 
@@ -128,28 +133,28 @@ public class MongoDB {
 
     private void printStatisticsAndAggregate (MongoCollection<Document> collection ) {
 
-        AggregateIterable<Document> aggregateProduct = collection.aggregate(Arrays.asList(
-                                         lookup("shop", "name", "products", "shop_list"),
-                                         unwind("$shop_list"),
-                                         group("$name", sum("count_products", 1),
-                                                            min("min_price", "$price"),
-                                                            max("max_price", "$price"),
-                                                            avg("avg_price" , "$price")),
-                                         match(lt("cheap_product", 100)),
-                                         count("cheap_product")));
-
         System.out.println("В базе:" + "\n\t Магазинов - " + shops.countDocuments() +
                                        "\n\t Товаров - " + products.countDocuments());
 
-        for (Document document : aggregateProduct) {
-            String shopName = (String) document.get("_id");
-            System.out.println("Магазин " + shopName);
-            System.out.println("Количество товара: " + document.get("count_products"));
-            System.out.println("Средняя цена товара: " + document.get("avg_price"));
-            System.out.println("Самый дорогой товар:  " + document.get("max_price"));
-            System.out.println("Самый дешевый товар:  " + document.get("min_price"));
-            System.out.println("Количество товаров, дешевле 100 рублей: " + document.get("cheap_product"));
-        }
+        System.out.println("Самый дорогой товар " + Objects.requireNonNull(collection.find()
+                                                           .sort(BsonDocument.parse("{price:-1}"))
+                                                           .first())
+                                                           .values());
+        System.out.println("Самый дешевый товар " + Objects.requireNonNull(collection.find()
+                                                           .sort(BsonDocument.parse("{price: 1}"))
+                                                           .first())
+                                                           .values());
+        Object outputAvg = Objects.requireNonNull(collection.aggregate(Collections.singletonList(
+                group("_id", new BsonField("AverageAge",
+                                 new BsonDocument("$avg",
+                                 new BsonString("$price"))))))
+                .first())
+                .values();
+        System.out.println("Средняя цена товара " + outputAvg);
+
+        Object query = new BasicDBObject("price", new BasicDBObject("$lt", 100));
+        System.out.print("Продукты c ценой меньше 100 ");
+        collection.find((Bson) query).forEach((Consumer<Document>) doc -> System.out.println(doc));
 
     }
 
