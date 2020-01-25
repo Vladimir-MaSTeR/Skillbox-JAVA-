@@ -116,7 +116,7 @@ public class MainForm {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
 
-                String regexFIO = "\\w+\\s\\w+\\s\\w+";
+                String regexFIO = "(?U)\\w+\\s\\w+\\s\\w+";
 
                 if (!FIOTextField.getText().matches(regexFIO)) {
                     JOptionPane.showMessageDialog(mainPanel,
