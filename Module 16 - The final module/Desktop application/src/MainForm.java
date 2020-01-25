@@ -126,7 +126,7 @@ public class MainForm {
 
                 } else {
 
-                    String[] splitName = FIOTextField.getText().split("\\");
+                    String[] splitName = FIOTextField.getText().split("\\s");
 
                     expandButton.setVisible(false);
                     FIOLabel.setVisible(false);
